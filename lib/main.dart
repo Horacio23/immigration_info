@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:immigration_info/domain/selected_info.dart';
 import 'package:immigration_info/views/transactiondetail.dart';
 import 'package:immigration_info/utils/navigation.dart';
@@ -13,8 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Informacion de Immigracion',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+          buttonColor: Color.fromRGBO(0xcc, 0x62, 0x00, 1)),
+          
       home: MyHomePage(title: 'Informacion de Immigracion'),
     );
   }
@@ -40,47 +42,95 @@ class _MyHomePageState extends State<MyHomePage> {
     'I-864': 'Affidavit'
   };
 
+  Color myPurple = Color.fromRGBO(142, 45, 226, 1);
+  Color myIndigo = Color.fromRGBO(74, 0, 224, 1);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).appBarTheme.color,
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                    'Estado Migratorio:',
-                    textScaleFactor: 1.3,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [myPurple, myIndigo],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter),
+          ),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Expanded(
+                                              child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Text('Estado Migratorio:',
+                              textScaleFactor: 1.3,
+                              style: Theme.of(context).accentTextTheme.title),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(25),
+                                  right: Radius.circular(25)),
+                              color: Theme.of(context).buttonColor),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              items: _statusList
+                                  .map((String value) => DropdownMenuItem(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 5),
+                                          child: Text(
+                                            value,
+                                            style: Theme.of(context)
+                                                .accentTextTheme
+                                                .title,
+                                          ),
+                                        ),
+                                        value: value,
+                                      ))
+                                  .toList(),
+                              value: _status,
+                              onChanged: (value) {
+                                _onDropDownChange(value);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: DropdownButton(
-                    items: _statusList
-                        .map((String value) => DropdownMenuItem(
-                              child: Text(value),
-                              value: value,
-                            ))
-                        .toList(),
-                    value: _status,
-                    onChanged: (value) {
-                      _onDropDownChange(value);
-                    },
+              ),
+              Container(
+                height: 270,
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: getTransactionList(),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(18.0),
+                            topRight: Radius.circular(18.0))),
                   ),
                 ),
-              ],
-            ),
-            Container(
-              child: getTransactionList(),
-              height: 630,
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
